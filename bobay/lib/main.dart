@@ -680,7 +680,9 @@ class _UserPageState extends State<UserPage>
         ],
       )
 
-    );}
+    );
+
+    }
     else{
     return Scaffold(
         backgroundColor: Colors.black,
