@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
   {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: '/FriendView',
+      initialRoute: '/',
       routes: {
         '/' : (context) => SignInScreen(),
         '/second' : (context) =>  UserPage(title: '',),
@@ -391,9 +391,21 @@ class _UserPageState extends State<UserPage>
     });
   }
 
-  String _function(){
+  Widget _function(){
 
-    return "Verified";
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.orange,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.check,
+        color: Colors.white,
+        size: 30,
+      ),
+    );
   }
 
 
@@ -463,9 +475,10 @@ class _UserPageState extends State<UserPage>
           ),
         ],
       ),);
-    p.add(Text(
+
+    p.add(
         _function()
-    ),);
+    );
     p.add(const SizedBox(height: 100));
     p.add(
       TextField(
