@@ -15,7 +15,10 @@ class User {
   String addType = "generic";
   late String password;
   List<String> messages = ["1st"];
+  List<String> messagesToMe = ["1st"];
+  List<String> nameOfSender = ["1st"];
   List<bool> wasTherePhoto = [false];
+  List<String> friends = [];
   List <Widget> photoarr = [];
   // Constructor with parameters
   User(
@@ -39,16 +42,57 @@ class User {
     this.addType = addType;
     this.password = password;
   }
+
+
 }
 
-List<User> ListOfUsers = [User("Ann Land","photos/photo.jpeg","A Mother, A child, A friend",
+List<User> ListOfUsers = [
+  User("Ann Land","photos/photo.jpeg","A Mother, A child, A friend",
     true, 25,"AnnLand@gmail.com", "password"
-)];
-User currentUser = ListOfUsers[0];
+),
 
+  User("Tom Fold","photos/HunterGuy.jpg","A Family Man",
+      false, 30,"TomFord@gmail.com", "password"
+  ),
+
+];
+User currentUser = ListOfUsers[0];
+User otherUser = ListOfUsers[1];
 Future<void> main() async {
-  //var t = await classifyInput("Lebron James scored 56 points");
-  //print(t);
+  // Set up Dummy messages
+  User currentUser = ListOfUsers[0];
+  currentUser.messagesToMe.add("Hi Ann! How are you");
+  currentUser.nameOfSender.add("Tom Fold");
+  currentUser.messagesToMe.add("Did you have a good weekend?");
+  currentUser.nameOfSender.add("Tom Fold");
+  currentUser.messagesToMe.add("I wanted to share a funny story with you.");
+  currentUser.nameOfSender.add("Tom Fold");
+  currentUser.messagesToMe.add("Are you free for a chat later today?");
+  currentUser.nameOfSender.add("Tom Fold");
+  currentUser.messagesToMe.add("By the way, have you seen the latest movie?");
+  currentUser.nameOfSender.add("Tom Fold");
+  currentUser.messagesToMe.add("I found a great restaurant we should try together.");
+  currentUser.nameOfSender.add("Tom Fold");
+
+
+  ListOfUsers[1].messagesToMe.add("Hey Tom! I'm doing well, thank you. How about you?");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("Yes, I had a fantastic weekend! I went hiking and spent time with friends. How about you?");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("Oh, I love funny stories! Go ahead and share it with me.");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("Sure, I should be available later today. What time works for you?");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("Yes, I watched it last weekend. It was amazing! Have you seen it?");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("That sounds exciting! I'm always up for trying new places. Let me know when you want to go.");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+  ListOfUsers[1].messagesToMe.add("Absolutely! We should plan something fun. Maybe a dinner or a movie night?");
+  ListOfUsers[1].nameOfSender.add("Ann Land");
+
+  ListOfUsers[1].friends.add("Ann Land");
+  ListOfUsers[0].friends.add("Tom Fold");
+
 
   runApp(const MyApp());
 }
@@ -62,12 +106,16 @@ class MyApp extends StatelessWidget {
   {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: '/' ,
+      initialRoute: '/FriendView',
       routes: {
         '/' : (context) => SignInScreen(),
         '/second' : (context) =>  UserPage(title: '',),
         '/createAccountPage' : (context) => CreateAccountPage(),
         '/MyAccount' : (context) => MyAccountPage(),
+        '/DMPage' : (context) => MessageView(),
+        '/FriendView' : (context) => FriendView(),
+        '/OtherUser' : (context) =>  OtherUserPage(title: '',),
+
       },
     );
   }
@@ -107,11 +155,6 @@ Color getColor(int i)
     }
   }
 }
-
-
-
-
-
 
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
@@ -207,23 +250,6 @@ class SignInScreen extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 
                 SIGNED IN USER PAGE *************************************************************************
@@ -291,9 +317,6 @@ class _UserPageState extends State<UserPage>
     print(t);
 
   }
-
-
-
 
   Widget returnAdd() {
     adCount++;
@@ -615,6 +638,11 @@ class _UserPageState extends State<UserPage>
               itemBuilder: (context){
                 return [
                   const PopupMenuItem<int>(
+                    value: 3,
+                    child: Text("My Friends and Messages"),
+                  ),
+
+                  const PopupMenuItem<int>(
                     value: 0,
                     child: Text("My Account"),
                   ),
@@ -632,11 +660,14 @@ class _UserPageState extends State<UserPage>
               },
               onSelected:(value){
                 if(value == 0){
-                  Navigator.pushNamed(context, '/MyAccount');
+                  Navigator.pushNamed(context, '/second');
                 }else if(value == 1){
-                  Navigator.pushNamed(context, '/myAccount');
+                  Navigator.pushNamed(context, '/MyAccount');
                 }else if(value == 2){
                   Navigator.pushNamed(context, '/');
+                }
+                else if(value == 3){
+                  Navigator.pushNamed(context, '/FriendView');
                 }
               }
           ),
@@ -697,6 +728,11 @@ class _UserPageState extends State<UserPage>
                 itemBuilder: (context){
                   return [
                     const PopupMenuItem<int>(
+                      value: 3,
+                      child: Text("My Friends and Messages"),
+                    ),
+
+                    const PopupMenuItem<int>(
                       value: 0,
                       child: Text("My Account"),
                     ),
@@ -714,11 +750,14 @@ class _UserPageState extends State<UserPage>
                 },
                 onSelected:(value){
                   if(value == 0){
-                    Navigator.pushNamed(context, '/');
+                    Navigator.pushNamed(context, '/second');
                   }else if(value == 1){
-                    Navigator.pushNamed(context, '/');
+                    Navigator.pushNamed(context, '/MyAccount');
                   }else if(value == 2){
                     Navigator.pushNamed(context, '/');
+                  }
+                  else if(value == 3){
+                    Navigator.pushNamed(context, '/FriendView');
                   }
                 }
             ),
@@ -773,7 +812,469 @@ class _UserPageState extends State<UserPage>
   }
 }
 
+class OtherUserPage extends StatefulWidget {
+  const OtherUserPage({super.key, required this.title});
 
+  final String title;
+
+  @override
+  State<OtherUserPage> createState() => _OtherUserPageState();
+}
+
+class _OtherUserPageState extends State<OtherUserPage>
+{
+  String ADD = "Hunting";
+  int _counter = 0;
+  List <Widget> p = [];
+
+  final myController = TextEditingController();
+
+  bool photoTaken = false;
+  File? _image;
+  int adCount = -1;
+  List <String> huntingAd = ["photos/HuntingAd1.jpg","photos/HuntingAd2.jpeg","photos/HuntingAd3.jpeg"];
+  List <String> sportsAd = ["photos/SportAd1.jpeg", "photos/SportAd2.jpeg", "photos/SportAd3.jpg"];
+  List <String> beautyAd = ["photos/BeautyAd1.jpg", "photos/BeautyAd2.jpg", "photos/BeautyAd3.jpg"];
+
+  Future<void> determineAd()
+  async {
+    //var t = await classifyInput("Lebron James scored 56 points");
+    //print(t);
+
+    //create String of messages
+    String packet = "";
+    for(int i = 1; i < currentUser.messages.length; i++)
+    {
+      packet = packet + currentUser.messages[i] + " ";
+    }
+    String stringWithExtraSpaces = packet;
+    packet = stringWithExtraSpaces.trim().replaceAll(RegExp(r'\s+'), ' ');
+    print(packet);
+    var t = await classifyInput(packet);
+    String gg = t.toString();
+    if(gg == "Beautiful")
+    {
+      print("BBBBBB");
+      ADD = "Beauty";
+      currentUser.addType = "Beauty";
+    }
+    else if(gg == "Sports")
+    {
+      ADD = "Sports";
+      currentUser.addType == "Sports";
+    }
+    else
+    {
+      ADD = "Hunting";
+      currentUser.addType == "Hunting";
+    }
+
+    print(packet);
+    print(t);
+
+  }
+
+  Widget returnAdd()
+  {
+    adCount++;
+
+    if (ADD == "Beauty") {
+      return Container(
+        width: 400,
+        height: 300,
+        child: Image.asset(
+          beautyAd[adCount % 3],
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (ADD == "Hunting") {
+      return Container(
+        width: 400,
+        height: 300,
+        child: Image.asset(
+          huntingAd[adCount % 3],
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return Container(
+        width: 400,
+        height: 300,
+        child: Image.asset(
+          sportsAd[adCount % 3],
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+  }
+
+  Future<void> _getImage() async {
+    final ImagePicker picker = ImagePicker();
+    // Capture a photo
+    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+    XFile? p = photo;
+    setState(() {
+
+      if(photo != null)
+      {
+        photoTaken = true;
+        _image = File(photo.path);
+        otherUser.photoarr.add(
+            Image.file(
+              _image!,
+              width: 400,  // set the width to 200 pixels
+              height: 250, // set the height to 200 pixels
+              fit: BoxFit.fill, // don't scale the image,
+            )
+        );
+      }
+      else
+      {
+        otherUser.wasTherePhoto[_counter - 1] = false;
+      }
+
+    });
+  }
+
+  void _incrementCounter() {
+    setState(() {
+
+      _counter++;
+    });
+  }
+  String _function(){
+
+    return "Verified";
+  }
+
+  void _addPost()
+  {
+
+    if(myController.text != '')
+    {
+      otherUser.wasTherePhoto.add(photoTaken);
+      photoTaken = false;
+      otherUser.messages.add(myController.text);
+      myController.text = '';
+
+      setState(() {
+        determineAd();
+        _counter++;
+      });
+    }
+
+  }
+
+  List <Widget> createHomepage() {
+    p = [];
+    late Color color1;
+    if (currentUser.theme == "light") {
+      const color1 = Colors.black;
+    }
+    else {
+      const color1 = Colors.white;
+    }
+    p.add(const SizedBox(height: 50));
+    p.add(
+
+      Row(
+        children:  [
+          SizedBox(width: 25),
+
+          CircleAvatar(
+            backgroundImage: ExactAssetImage(otherUser.photo),
+            // Optional as per your use case
+            minRadius: 30,
+            maxRadius: 70,
+          ),
+          const SizedBox(width: 25),
+          Text(
+              otherUser.moto
+          ),
+        ],
+      ),);
+    p.add(Text(
+        _function()
+    ),);
+    p.add(const SizedBox(height: 100));
+
+    int photoCount = otherUser.photoarr.length - 1;
+
+    for (int i = otherUser.messages.length - 1; i > 0; i--) {
+      print(otherUser.messages.length);
+      print(otherUser.wasTherePhoto.length);
+
+      if (otherUser.wasTherePhoto[i]) {
+        if (otherUser.theme == "light") {
+          p.add(
+            Container(
+              width: 400,
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    otherUser.photoarr[photoCount],
+                    Text(
+                      otherUser.messages[i],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          photoCount--;
+        }
+        else // Dark Theme
+            {
+          if (otherUser.theme == "light"){
+            p.add(
+              Container(
+                width: 400,
+                height: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 1,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      otherUser.photoarr[photoCount],
+                      Text(
+                        otherUser.messages[i],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+            photoCount--;
+          }}
+      }
+      else { // There is no photo ****************************************************
+        if (otherUser.theme == "light"){
+          p.add(
+            Container(
+              width: 400,
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      otherUser.messages[i],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );}
+        else
+        {
+          p.add(
+            Container(
+              width: 400,
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.white,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      otherUser.messages[i],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      }// If not photo
+
+
+
+      p.add(const SizedBox(height: 4));
+      p.add(returnAdd());
+      p.add(const SizedBox(height: 4));
+    }// end for loop
+
+    return p;
+  }
+
+  @override
+  Widget build(BuildContext context)
+  {
+    if(currentUser.theme == "light")
+    {
+      return Scaffold(
+          backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text("HomePage"),
+          backgroundColor: Colors.orange ,
+          actions: [
+
+            PopupMenuButton(
+              // add icon, by default "3 dot" icon
+              // icon: Icon(Icons.book)
+                itemBuilder: (context){
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 3,
+                      child: Text("My Friends and Messages"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("My Account"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text("Settings"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child: Text("Logout"),
+                    ),
+                  ];
+                },
+                onSelected:(value){
+                  if(value == 0){
+                    Navigator.pushNamed(context, '/second');
+                  }else if(value == 1){
+                    Navigator.pushNamed(context, '/MyAccount');
+                  }else if(value == 2){
+                    Navigator.pushNamed(context, '/');
+                  }
+                  else if(value == 3){
+                    Navigator.pushNamed(context, '/FriendView');
+                  }
+                }
+            ),
+
+          ],
+        ),
+          body: Scrollbar(
+            child: ListView(
+                children:
+                [Column(
+                    children: createHomepage()
+                ),]
+            ),),
+
+
+      );
+
+    }
+    else{
+      return Scaffold(
+          backgroundColor: Colors.black,
+        appBar: AppBar(
+          title: const Text("HomePage"),
+          backgroundColor: Colors.orange ,
+          actions: [
+
+            PopupMenuButton(
+              // add icon, by default "3 dot" icon
+              // icon: Icon(Icons.book)
+                itemBuilder: (context){
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 3,
+                      child: Text("My Friends and Messages"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("My Account"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text("Settings"),
+                    ),
+
+                    const PopupMenuItem<int>(
+                      value: 2,
+                      child: Text("Logout"),
+                    ),
+                  ];
+                },
+                onSelected:(value){
+                  if(value == 0){
+                    Navigator.pushNamed(context, '/second');
+                  }else if(value == 1){
+                    Navigator.pushNamed(context, '/MyAccount');
+                  }else if(value == 2){
+                    Navigator.pushNamed(context, '/');
+                  }
+                  else if(value == 3){
+                    Navigator.pushNamed(context, '/FriendView');
+                  }
+                }
+            ),
+
+          ],
+        ),
+          body: Scrollbar(
+            child: ListView(
+                children:
+                [Column(
+                    children: createHomepage()
+                ),]
+            ),),
+
+
+
+      );
+
+
+    }
+
+
+
+
+  }
+}
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -851,13 +1352,6 @@ class CreateAccountPage extends StatelessWidget {
 
   }
 }
-
-
-
-
-
-
-
 
 class MyAccountPage extends StatefulWidget {
   const MyAccountPage({Key? key}) : super(key: key);
@@ -960,16 +1454,260 @@ class _MyAccountPageState extends State<MyAccountPage> {
 
 
 
+class MessageView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Direct Messages'),
+        backgroundColor: Colors.orange,
+      ),
+      body: Scrollbar(
+        child: ListView(
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  ...getDMs(),
+                  SizedBox(height: 80),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? findUserPhoto(String name)
+  {
+    for(int i = 0; i < ListOfUsers.length; i++)
+    {
+      if(name == ListOfUsers[i].name)
+      {
+        return ListOfUsers[i].photo;
+      }
+    }
+
+  }
+
+  List<Widget> getDMs() {
+
+    List<Widget> returnList = [];
+    for(int i = currentUser.messagesToMe.length - 1; i > 0; i--)
+    {
+      String photoPath = findUserPhoto(currentUser.nameOfSender[i]) ?? "photos/generic.jpeg";
+      print(currentUser.messagesToMe[i]);
+      returnList.add(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    // Handle container tap event
+                    print('Container 1 tapped!');
+                  },
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Row(
+                        children: [
+
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage: AssetImage(photoPath), // Replace with your own image path
+                          ),
+
+                          SizedBox(
+                            width: 10,
+                          ),
+
+                          Container(
+                            width: 300,
+                            height: 150,
+                            color: Colors.grey,
+                            child:
+                              Text(
+                                currentUser.messagesToMe[i],
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                ),
+
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+      );
+    }
+
+    return returnList;
+  }
+}
 
 
 
 
 
 
+class FriendView extends StatelessWidget {
+  void showMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text("Direct Messages"),
+                onTap: () {
+                  Navigator.pop(context, 1); // Return the selected value
+                },
+              ),
+              ListTile(
+                title: Text('User\'s Page'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/OtherUser');// Return the selected value
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    ).then((value) {
+      // Handle menu item selection here
+      if (value != null) {
+        print('Selected menu item: $value');
+      }
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Friends View"),
+        backgroundColor: Colors.orange ,
+        actions: [
 
+          PopupMenuButton(
+            // add icon, by default "3 dot" icon
+            // icon: Icon(Icons.book)
+              itemBuilder: (context){
+                return [
+                  const PopupMenuItem<int>(
+                    value: 3,
+                    child: Text("My Friends and Messages"),
+                  ),
 
+                  const PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("My Account"),
+                  ),
 
+                  const PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Settings"),
+                  ),
+
+                  const PopupMenuItem<int>(
+                    value: 2,
+                    child: Text("Logout"),
+                  ),
+                ];
+              },
+              onSelected:(value){
+                if(value == 0){
+                  Navigator.pushNamed(context, '/second');
+                }else if(value == 1){
+                  Navigator.pushNamed(context, '/MyAccount');
+                }else if(value == 2){
+                  Navigator.pushNamed(context, '/');
+                }
+                else if(value == 3){
+                  Navigator.pushNamed(context, '/FriendView');
+                }
+              }
+          ),
+
+        ],
+      ),
+      body: ListView(
+        children: getFriends(context) ,
+      ),
+    );
+  }
+
+  String findUserPhoto(String name)
+  {
+    print(ListOfUsers.length);
+    for(int i = 0; i < ListOfUsers.length; i++)
+    {
+      print(ListOfUsers[i].name);
+      if(name == ListOfUsers[i].name)
+      {
+        print("fFFFFFFFFFFFFFFFFFFFFF");
+        print(ListOfUsers[i].name);
+        return ListOfUsers[i].photo;
+      }
+    }
+    return "photos/generic.jpg";
+
+  }
+
+  List<Widget> getFriends(BuildContext context) {
+    List<Widget> returnList = [];
+    for(int i = 0; i < currentUser.friends.length; i++)
+    {
+      String photoPath = findUserPhoto(currentUser.friends[i]);
+      print(photoPath);
+      returnList.add(GestureDetector(
+        onTap: () {
+          // Handle container tap event
+          print('Container ${currentUser.friends[i]} tapped!');
+          showMenu(context);
+        },
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 80,
+                  backgroundImage: AssetImage(photoPath), // Replace with your own image path
+                ),
+                SizedBox(width: 10),
+                Container(
+                  width: 300,
+                  height: 150,
+                  color: Colors.grey,
+                  child: Text(
+                    currentUser.friends[i],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 40,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ));
+    }
+    return returnList;
+  }
+}
 
 
 
@@ -995,6 +1733,8 @@ Future<String> classifyInput(String input) async {
     return "Generic";
   }
 }
+
+
 
 
 
