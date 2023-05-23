@@ -20,6 +20,10 @@ class User {
   List<bool> wasTherePhoto = [false];
   List<String> friends = [];
   List <Widget> photoarr = [];
+  List<List<List<String>>> DMs = [];
+
+
+
   // Constructor with parameters
   User(
       String name,
@@ -42,7 +46,6 @@ class User {
     this.addType = addType;
     this.password = password;
   }
-
 
 }
 
@@ -115,44 +118,9 @@ class MyApp extends StatelessWidget {
         '/DMPage' : (context) => MessageView(),
         '/FriendView' : (context) => FriendView(),
         '/OtherUser' : (context) =>  OtherUserPage(title: '',),
-
+        '/DMview' : (context) =>  DMView(),
       },
     );
-  }
-}
-
-/*
-
-      SIGN-IN SCREEN *************************************************************
-
- */
-
-
-Color getColor(int i)
-{
-  if(currentUser.theme == "light")
-  {
-    if (i == 0) {
-      return Colors.white;
-    } else if (i == 1) {
-      return Colors.black;
-    } else if (i == 2) {
-      return Colors.green;
-    } else {
-      return Colors.orange;
-    }
-  }
-  else
-  {
-    if (i == 0) {
-      return Colors.black;
-    } else if (i == 1) {
-      return Colors.white;
-    } else if (i == 2) {
-      return Colors.yellow;
-    } else {
-      return Colors.orange;
-    }
   }
 }
 
@@ -250,11 +218,6 @@ class SignInScreen extends StatelessWidget {
   }
 }
 
-/*
-
-                SIGNED IN USER PAGE *************************************************************************
-
-*/
 class UserPage extends StatefulWidget {
   const UserPage({super.key, required this.title});
 
@@ -278,7 +241,6 @@ class _UserPageState extends State<UserPage>
   List <String> huntingAd = ["photos/HuntingAd1.jpg","photos/HuntingAd2.jpeg","photos/HuntingAd3.jpeg"];
   List <String> sportsAd = ["photos/SportAd1.jpeg", "photos/SportAd2.jpeg", "photos/SportAd3.jpg"];
   List <String> beautyAd = ["photos/BeautyAd1.jpg", "photos/BeautyAd2.jpg", "photos/BeautyAd3.jpg"];
-
   Future<void> determineAd()
   async {
     //var t = await classifyInput("Lebron James scored 56 points");
@@ -317,7 +279,6 @@ class _UserPageState extends State<UserPage>
     print(t);
 
   }
-
   Widget returnAdd() {
     adCount++;
 
@@ -350,10 +311,6 @@ class _UserPageState extends State<UserPage>
       );
     }
   }
-
-
-
-
   Future<void> _getImage() async {
     final ImagePicker picker = ImagePicker();
     // Capture a photo
@@ -381,16 +338,12 @@ class _UserPageState extends State<UserPage>
 
     });
   }
-
-
-
   void _incrementCounter() {
     setState(() {
 
       _counter++;
     });
   }
-
   Widget _function(){
 
     return Container(
@@ -407,10 +360,6 @@ class _UserPageState extends State<UserPage>
       ),
     );
   }
-
-
-
-
   void _addPost()
   {
 
@@ -428,25 +377,15 @@ class _UserPageState extends State<UserPage>
     }
 
   }
-
-
-
-
-
-
-
-
   void getProfilePic()
   {
 
 
   }
-
   void getPhoto(i)
   {
 
   }
-
   List <Widget> createHomepage() {
     p = [];
     late Color color1;
@@ -632,7 +571,6 @@ class _UserPageState extends State<UserPage>
 
     return p;
   }
-
   @override
   Widget build(BuildContext context)
   {
@@ -824,7 +762,6 @@ class _UserPageState extends State<UserPage>
 
   }
 }
-
 class OtherUserPage extends StatefulWidget {
   const OtherUserPage({super.key, required this.title});
 
@@ -1288,7 +1225,6 @@ class _OtherUserPageState extends State<OtherUserPage>
 
   }
 }
-
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
 
@@ -1461,12 +1397,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 }
 
-
-
-
-
-
-
 class MessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1565,11 +1495,6 @@ class MessageView extends StatelessWidget {
     return returnList;
   }
 }
-
-
-
-
-
 
 class FriendView extends StatelessWidget {
   void showMenu(BuildContext context) {
@@ -1677,7 +1602,21 @@ class FriendView extends StatelessWidget {
 
   }
 
-  List<Widget> getFriends(BuildContext context) {
+
+  User findUser(String name) {
+    print(ListOfUsers.length);
+    for (int i = 0; i < ListOfUsers.length; i++) {
+      print(ListOfUsers[i].name);
+      if (name == ListOfUsers[i].name) {
+        print("fFFFFFFFFFFFFFFFFFFFFF");
+        print(ListOfUsers[i].name);
+        return ListOfUsers[i];
+      }
+    }
+    return ListOfUsers[0];
+  }
+
+    List<Widget> getFriends(BuildContext context) {
     List<Widget> returnList = [];
     for(int i = 0; i < currentUser.friends.length; i++)
     {
@@ -1685,7 +1624,7 @@ class FriendView extends StatelessWidget {
       print(photoPath);
       returnList.add(GestureDetector(
         onTap: () {
-          // Handle container tap event
+          otherUser = findUser(currentUser.friends[i]);
           print('Container ${currentUser.friends[i]} tapped!');
           showMenu(context);
         },
@@ -1722,16 +1661,154 @@ class FriendView extends StatelessWidget {
   }
 }
 
+class DMView extends StatefulWidget {
+  @override
+  _DMViewState createState() => _DMViewState();
+}
+
+class _DMViewState extends State<DMView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("DM"),
+        backgroundColor: Colors.orange,
+        actions: [
+          PopupMenuButton<int>(
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<int>(
+                  value: 3,
+                  child: Text("My Friends and Messages"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("My Account"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("Settings"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 2,
+                  child: Text("Logout"),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 0) {
+                Navigator.pushNamed(context, '/second');
+              } else if (value == 1) {
+                Navigator.pushNamed(context, '/MyAccount');
+              } else if (value == 2) {
+                Navigator.pushNamed(context, '/');
+              } else if (value == 3) {
+                Navigator.pushNamed(context, '/FriendView');
+              }
+            },
+          ),
+        ],
+      ),
+      body: ListView(
+        children: getDMs(),
+      ),
+    );
+  }
+
+  List<Widget> getDMs() {
+    int index = getFriendIndex();
+    List<Widget> returnList = [];
 
 
+    /*
+    if (currentUser.DMs[index][0].length != 0) {
+      for (int i = 0; i < currentUser.DMs[index][0].length; i++) {
+        if (currentUser.DMs[index][1][i] == "sent") {
+          returnList.add(Container(
+            alignment: Alignment.centerLeft,
+            color: Colors.orange[200],
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                currentUser.DMs[index][0][i],
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ));
+        } else {
+          returnList.add(Container(
+            alignment: Alignment.centerRight,
+            color: Colors.orange[200],
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                currentUser.DMs[index][0][i],
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ));
+        }
+      }
+    } else {
+      returnList.add(Container(
+        alignment: Alignment.centerRight,
+        color: Colors.orange[200],
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            "No Messages",
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ));
+    }*/
+    returnList.add(SizedBox(
+      width: 250,
+      height: 100,
+      child: Container(
+        alignment: Alignment.centerRight,
+        color: Colors.orange[200],
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            "No Messages",
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ),
+    ));
+
+
+    return returnList;
+  }
+
+  void sendDM(String packet, int index) {
+    int P = 0;
+    for (int i = 0; i < currentUser.friends.length; i++) {
+      if (otherUser.friends[i] == currentUser.name) {
+        P = i;
+      }
+    }
+    otherUser.DMs[P][0].add(packet);
+    otherUser.DMs[P][1].add("receive");
+    currentUser.DMs[index][0].add(packet);
+    currentUser.DMs[index][1].add("sent");
+    setState(() {}); // Update the state to reflect the changes
+  }
+
+  int getFriendIndex() {
+    for (int i = 0; i < currentUser.friends.length; i++) {
+      if (otherUser.name == currentUser.friends[i]) {
+        return i;
+      }
+    }
+    return 0;
+  }
+}
 
 /*
-
-          API CALL
-
- */
-
-
+            API CALL
+*/
 Future<String> classifyInput(String input) async {
   final url = Uri.parse('http://34.16.130.77:8080/classify');
   final headers = {'Content-Type': 'application/json'};
